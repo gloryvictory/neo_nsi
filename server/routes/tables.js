@@ -28,18 +28,36 @@ router.get('/tables', async (req, res) => {
     //   ORDER BY t.table_name
     // `;
     
+    // const query = `
+    //   SELECT 
+    //     t.table_name,
+    //     obj_description(
+    //       (quote_ident('public') || '.' || quote_ident(t.table_name))::regclass,
+    //       'pg_class'
+    //     ) AS table_comment,
+    //      (SELECT COUNT(*) FROM information_schema.columns c 
+    //       WHERE c.table_schema = 'public' AND c.table_name = t.table_name) AS column_count
+    //   FROM information_schema.tables t
+    //   WHERE t.table_type = 'BASE TABLE'
+    //     AND t.table_schema = 'public' 
+    //   ORDER BY 2
+    // `;
+    
+    
     const query = `
       SELECT 
         t.table_name,
         obj_description(
           (quote_ident('public') || '.' || quote_ident(t.table_name))::regclass,
           'pg_class'
-        ) AS table_comment,
-         (SELECT COUNT(*) FROM information_schema.columns c 
-          WHERE c.table_schema = 'public' AND c.table_name = t.table_name) AS column_count
+        ) AS table_comment
       FROM information_schema.tables t
-      WHERE t.table_type = 'BASE TABLE'
-        AND t.table_schema = 'public' 
+      WHERE  t.table_type = 'BASE TABLE'
+        AND t.table_schema = 'public'
+        AND obj_description(
+          (quote_ident('public') || '.' || quote_ident(t.table_name))::regclass,
+          'pg_class'
+        ) LIKE 'Спр%'
       ORDER BY 2
     `;
 
