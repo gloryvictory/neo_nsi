@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import ExcelJS from 'exceljs';
-import pool from './db.js';
-import { config } from './config.js';
+// import pool from 'db.js';
+import pool from '../db.js';
+import { config } from '../config.js';
 
 const router = Router();
 
@@ -11,6 +12,22 @@ router.get('/tables', async (req, res) => {
     const schema = config.db.schema;
     const prefix = config.tablePrefix;
 
+    // const query = `
+    //   SELECT 
+    //     t.table_name,
+    //     obj_description(
+    //       (quote_ident(t.table_schema) || '.' || quote_ident(t.table_name))::regclass,
+    //       'pg_class'
+    //     ) AS table_comment,
+    //     (SELECT COUNT(*) FROM information_schema.columns c 
+    //      WHERE c.table_schema = t.table_schema AND c.table_name = t.table_name) AS column_count
+    //   FROM information_schema.tables t
+    //   WHERE t.table_schema = $1 
+    //     AND t.table_type = 'BASE TABLE'
+    //     AND t.table_name LIKE $2
+    //   ORDER BY t.table_name
+    // `;
+    
     const query = `
       SELECT 
         t.table_name,
@@ -27,7 +44,10 @@ router.get('/tables', async (req, res) => {
       ORDER BY t.table_name
     `;
 
-    const { rows } = await pool.query(query, [schema, `${prefix}%`]);
+    // const { rows } = await pool.query(query, [schema, `${prefix}%`]);
+    console.log(query)
+    
+    const { rows } = await pool.query(query, [`${schema}`, `${prefix}%`]);
     res.json({ success: true, data: rows });
   } catch (err) {
     console.error('Ошибка получения списка таблиц:', err);
