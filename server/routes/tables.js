@@ -32,22 +32,21 @@ router.get('/tables', async (req, res) => {
       SELECT 
         t.table_name,
         obj_description(
-          (quote_ident(t.table_schema) || '.' || quote_ident(t.table_name))::regclass,
+          (quote_ident('public') || '.' || quote_ident(t.table_name))::regclass,
           'pg_class'
-        ) AS table_comment,
-        (SELECT COUNT(*) FROM information_schema.columns c 
-         WHERE c.table_schema = t.table_schema AND c.table_name = t.table_name) AS column_count
+        ) AS table_comment
       FROM information_schema.tables t
-      WHERE t.table_schema = $1 
-        AND t.table_type = 'BASE TABLE'
-        AND t.table_name LIKE $2
+      WHERE t.table_type = 'BASE TABLE'
+        AND t.table_schema = 'public' 
       ORDER BY t.table_name
     `;
 
+    // AND t.table_name LIKE $1
     // const { rows } = await pool.query(query, [schema, `${prefix}%`]);
     console.log(query)
+
+    const { rows } = await pool.query(query);
     
-    const { rows } = await pool.query(query, [`${schema}`, `${prefix}%`]);
     res.json({ success: true, data: rows });
   } catch (err) {
     console.error('Ошибка получения списка таблиц:', err);
