@@ -34,7 +34,9 @@ router.get('/tables', async (req, res) => {
         obj_description(
           (quote_ident('public') || '.' || quote_ident(t.table_name))::regclass,
           'pg_class'
-        ) AS table_comment
+        ) AS table_comment,
+         (SELECT COUNT(*) FROM information_schema.columns c 
+          WHERE c.table_schema = 'public' AND c.table_name = t.table_name) AS column_count
       FROM information_schema.tables t
       WHERE t.table_type = 'BASE TABLE'
         AND t.table_schema = 'public' 
@@ -46,7 +48,7 @@ router.get('/tables', async (req, res) => {
     console.log(query)
 
     const { rows } = await pool.query(query);
-    
+
     res.json({ success: true, data: rows });
   } catch (err) {
     console.error('Ошибка получения списка таблиц:', err);

@@ -60,9 +60,9 @@ export default function TableList({ tables, selectedTable, onSelect, loading }) 
               className={`table-item ${selectedTable === table.table_name ? 'active' : ''}`}
               onClick={() => onSelect(table.table_name)}
             >
-              <div className="table-item-name">{table.table_name}</div>
-              {table.table_comment && (
-                <div className="table-item-comment">{table.table_comment}</div>
+              <div className="table-item-name">{table.table_comment}</div>
+              {table.table_name && (
+                <div className="table-item-comment">{table.table_name}</div>
               )}
               <div className="table-item-meta">
                 {table.column_count} колонок
