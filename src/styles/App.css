@@ -260,7 +260,7 @@ body {
 
 .table-item-comment {
   font-size: 11px;
-  color: var(--text-secondary);
+  color: var(--accent);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

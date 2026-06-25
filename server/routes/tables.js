@@ -40,7 +40,7 @@ router.get('/tables', async (req, res) => {
       FROM information_schema.tables t
       WHERE t.table_type = 'BASE TABLE'
         AND t.table_schema = 'public' 
-      ORDER BY t.table_name
+      ORDER BY 2
     `;
 
     // AND t.table_name LIKE $1
